@@ -1,0 +1,122 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Create a ScreenGui and UI elements
+local screenGui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local speedInput = Instance.new("TextBox")
+local applyButton = Instance.new("TextButton")
+local nameLabel = Instance.new("TextLabel")
+local closeButton = Instance.new("TextButton")
+local copyButton = Instance.new("TextButton")  -- New button for copying Discord link
+
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Configure Frame to hold UI elements
+frame.Parent = screenGui
+frame.Size = UDim2.new(0, 300, 0, 260)  -- Increased height to fit new button
+frame.Position = UDim2.new(0.5, -150, 0.5, -130)  -- Adjusted position
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  -- Darker background
+frame.BorderSizePixel = 0  -- Remove border
+frame.Active = true
+frame.Draggable = true
+
+-- Configure TextLabel (Name Label)
+nameLabel.Parent = frame
+nameLabel.Size = UDim2.new(1, 0, 0, 50)
+nameLabel.Position = UDim2.new(0, 0, 0, 0)
+nameLabel.Text = "Yuji Itadori"
+nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+nameLabel.TextScaled = true
+nameLabel.TextStrokeTransparency = 0.5  -- Add stroke for readability
+nameLabel.TextSize = 24  -- Slightly larger text
+
+-- Configure TextBox
+speedInput.Parent = frame
+speedInput.Size = UDim2.new(1, -20, 0, 50)
+speedInput.Position = UDim2.new(0, 10, 0, 60)
+speedInput.PlaceholderText = "Enter Speed"
+speedInput.Text = ""
+speedInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+speedInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+speedInput.BorderSizePixel = 2
+speedInput.BorderColor3 = Color3.fromRGB(0, 0, 0)  -- Dark border
+
+-- Configure Button (Apply)
+applyButton.Parent = frame
+applyButton.Size = UDim2.new(1, -20, 0, 50)
+applyButton.Position = UDim2.new(0, 10, 0, 120)
+applyButton.Text = "Set Speed"
+applyButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)  -- Slightly darker green
+applyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+applyButton.TextScaled = true
+
+-- Configure Copy Button
+copyButton.Parent = frame
+copyButton.Size = UDim2.new(1, -20, 0, 50)
+copyButton.Position = UDim2.new(0, 10, 0, 180)  -- Position below the apply button
+copyButton.Text = "Copy Discord Server"
+copyButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)  -- Blue background
+copyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+copyButton.TextScaled = true
+
+-- Configure Close Button
+closeButton.Parent = frame
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -40, 0, 10)
+closeButton.Text = "X"
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextScaled = true
+closeButton.BorderSizePixel = 0  -- Remove border
+
+-- Function to set the player's walk speed
+local function setSpeed()
+    local speed = tonumber(speedInput.Text)
+    if speed and speed > 0 then
+        humanoid.WalkSpeed = speed
+        -- Notification for speed change
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Speed Changed 🚀";
+            Text = "Walk Speed set to " .. speed .. "!";
+            Duration = 5;
+        })
+    else
+        speedInput.Text = "Invalid Speed"
+    end
+end
+
+-- Function to copy the Discord link
+local function copyDiscordLink()
+    setclipboard("https://discord.com/invite/6j84hBHqf8")  -- Updated Discord link
+    -- Notification when the Discord link is copied
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Link Copied 📋";
+        Text = "Discord server link has been copied to clipboard! 📎";
+        Duration = 5;
+    })
+end
+
+-- Function to close the GUI
+local function closeGUI()
+    screenGui:Destroy()
+end
+
+-- Connect the functions to the respective button clicks
+applyButton.MouseButton1Click:Connect(setSpeed)
+copyButton.MouseButton1Click:Connect(copyDiscordLink)  -- Connect the copy button
+closeButton.MouseButton1Click:Connect(closeGUI)
+
+-- Initial notification about who made it
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Made by Yuji Itadori 💪";
+    Text = "Welcome! Use this GUI to change your speed.";
+    Duration = 5;
+})
+
+-- Optional: Clear the input when the player focuses on the TextBox
+speedInput.Focused:Connect(function()
+    speedInput.Text = ""
+end)
